@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Traffic Control</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Leaflet Map -->
+    <link rel="stylesheet"
+          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <style>
+
+        body {
+            margin: 0;
+            background: #111827;
+            color: white;
+            font-family: 'Inter', sans-serif;
+        }
+
+        header {
+            background: #1f2937;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            margin: 0;
+        }
+
+        .dashboard {
+            width: 90%;
+            max-width: 1100px;
+            margin: 25px auto;
+        }
+
+        .card {
+            background: #1f2937;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 15px;
+        }
+
+        .card h2 {
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        /* MAP */
+
+        #map {
+            height: 450px;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        /* BUZZER */
+
+        .buzzer {
+            text-align: center;
+        }
+
+        #buzzerButton {
+            background: #dc2626;
+            color: white;
+            border: none;
+            padding: 18px 35px;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        #buzzerButton:hover {
+            background: #ef4444;
+        }
+
+        #status {
+            font-family: 'Orbitron', sans-serif;
+            margin-top: 15px;
+            font-size: 20px;
+        }
+
+        .coordinates {
+            text-align: center;
+            margin-top: 10px;
+            color: #d1d5db;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>TRAFFIC CONTROL SYSTEM</h1>
+</header>
+
+<div class="dashboard">
+
+    <!-- MAP -->
+    <div class="card">
+
+        <h2> System Location</h2>
+
+        <div id="map"></div>
+
+        <div class="coordinates">
+            7.911194425734629, 125.09309316775534
+        </div>
+
+    </div>
+
+
+    <!-- BUZZER -->
+    <div class="card buzzer">
+
+        <h2> Emergency Buzzer</h2>
+
+        <button id="buzzerButton" onclick="toggleBuzzer()">
+             TURN BUZZER ON
+        </button>
+
+        <div id="status">
+            Buzzer: OFF
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    /* =========================
+       MAP
+    ========================= */
+
+    const latitude = 7.911194425734629;
+    const longitude = 125.09309316775534;
+
+    const map = L.map('map').setView(
+        [latitude, longitude],
+        17
+    );
+
+    L.tileLayer(
+        'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        {
+            attribution: '&copy; OpenStreetMap contributors'
+        }
+    ).addTo(map);
+
+    const marker = L.marker(
+        [latitude, longitude]
+    ).addTo(map);
+
+    /* =========================
+       BUZZER
+    ========================= */
+
+    let buzzerOn = false;
+
+    function toggleBuzzer() {
+
+        buzzerOn = !buzzerOn;
+
+        if (buzzerOn) {
+
+            document.getElementById("buzzerButton").innerHTML =
+                "TURN BUZZER OFF";
+
+            document.getElementById("status").innerHTML =
+                "Buzzer:  ON";
+
+            document.getElementById("status").style.color =
+                "#ef4444";
+
+        } else {
+
+            document.getElementById("buzzerButton").innerHTML =
+                "TURN BUZZER ON";
+
+            document.getElementById("status").innerHTML =
+                "Buzzer: OFF";
+
+            document.getElementById("status").style.color =
+                "white";
+        }
+
+    }
+
+</script>
+
+</body>
+</html>
