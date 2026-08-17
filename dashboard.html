@@ -1,32 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head>
-
     <title>Traffic Control</title>
 
-    <!-- Leaflet Map -->
     <link rel="stylesheet"
           href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@500;600;700&display=swap"
-          rel="stylesheet">
-
     <style>
-
         body {
             margin: 0;
             background: #111827;
             color: white;
-            font-family: 'Inter', sans-serif;
+            font-family: Arial, sans-serif;
         }
-
-        /* HEADER */
 
         header {
             background: #1f2937;
@@ -35,19 +21,14 @@
         }
 
         h1 {
-            font-family: 'Orbitron', sans-serif;
             margin: 0;
         }
-
-        /* DASHBOARD */
 
         .dashboard {
             width: 90%;
             max-width: 1100px;
             margin: 25px auto;
         }
-
-        /* CARDS */
 
         .card {
             background: #1f2937;
@@ -56,17 +37,10 @@
             border-radius: 15px;
         }
 
-        .card h2 {
-            font-family: 'Orbitron', sans-serif;
-        }
-
-        /* MAP */
-
         #map {
-            height: 450px;
             width: 100%;
+            height: 450px;
             border-radius: 12px;
-            overflow: hidden;
         }
 
         .coordinates {
@@ -75,8 +49,6 @@
             color: #d1d5db;
         }
 
-        /* BUZZER */
-
         .buzzer {
             text-align: center;
         }
@@ -84,223 +56,134 @@
         #buzzerButton {
             background: #dc2626;
             color: white;
-
             border: none;
             padding: 18px 35px;
-
             border-radius: 10px;
-
             font-size: 18px;
             font-weight: bold;
-
             cursor: pointer;
-
-            transition: 0.2s;
         }
-
-        #buzzerButton:hover {
-            background: #ef4444;
-            transform: scale(1.03);
-        }
-
-        /* STATUS */
 
         #status {
-            font-family: 'Orbitron', sans-serif;
-
             margin-top: 15px;
-
             font-size: 20px;
+            font-weight: bold;
         }
-
     </style>
-
 </head>
 
 <body>
 
-    <!-- HEADER -->
+<header>
+    <h1>TRAFFIC CONTROL SYSTEM</h1>
+</header>
 
-    <header>
+<div class="dashboard">
 
-        <h1>
-            TRAFFIC CONTROL SYSTEM
-        </h1>
+    <div class="card">
 
-    </header>
+        <h2>📍 System Location</h2>
 
+        <div id="map"></div>
 
-    <div class="dashboard">
-
-        <!-- =========================
-             MAP
-        ========================== -->
-
-        <div class="card">
-
-            <h2>
-                 System Location
-            </h2>
-
-            <div id="map"></div>
-
-            <div class="coordinates">
-
-                7.911194425734629,
-                125.09309316775534
-
-            </div>
-
-        </div>
-
-
-        <!-- =========================
-             BUZZER
-        ========================== -->
-
-        <div class="card buzzer">
-
-            <h2>
-                 Emergency Buzzer
-            </h2>
-
-            <button
-                id="buzzerButton"
-                onclick="toggleBuzzer()">
-
-                 TURN BUZZER ON
-
-            </button>
-
-            <div id="status">
-
-                Buzzer:
-                <span id="buzzerState"
-                      style="color: red;">
-
-                    OFF
-
-                </span>
-
-            </div>
-
+        <div class="coordinates">
+            7.911194425734629, 125.09309316775534
         </div>
 
     </div>
 
+    <div class="card buzzer">
 
-    <script>
+        <h2>🚨 Emergency Buzzer</h2>
 
-        /* =========================
-           MAP
-        ========================== */
+        <button id="buzzerButton" onclick="toggleBuzzer()">
+            🔔 TURN BUZZER ON
+        </button>
 
-        const latitude =
-            7.911194425734629;
+        <div id="status">
+            Buzzer:
+            <span id="buzzerState" style="color:red;">
+                OFF
+            </span>
+        </div>
 
-        const longitude =
-            125.09309316775534;
+    </div>
 
+</div>
 
-        // Create map
+<!-- LOAD LEAFLET -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-        const map =
-            L.map('map').setView(
-                [latitude, longitude],
-                17
-            );
+<script>
 
+    // =========================
+    // MAP
+    // =========================
 
-        // Add OpenStreetMap
+    const latitude = 7.911194425734629;
+    const longitude = 125.09309316775534;
 
-        L.tileLayer(
-            'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-            {
-                attribution:
-                    '&copy; OpenStreetMap contributors'
-            }
-        ).addTo(map);
+    const map = L.map("map").setView(
+        [latitude, longitude],
+        17
+    );
 
-
-        // Add marker
-
-        const marker =
-            L.marker(
-                [latitude, longitude]
-            ).addTo(map);
-
-
-        // Marker popup
-
-        marker.bindPopup(
-
-            '<b>Traffic Management System</b><br>' +
-            'System Location'
-
-        ).openPopup();
-
-
-        /* =========================
-           BUZZER
-        ========================== */
-
-        let buzzerOn = false;
-
-
-        function toggleBuzzer() {
-
-            buzzerOn = !buzzerOn;
-
-
-            const button =
-                document.getElementById(
-                    "buzzerButton"
-                );
-
-            const state =
-                document.getElementById(
-                    "buzzerState"
-                );
-
-
-            /* BUZZER ON */
-
-            if (buzzerOn) {
-
-                button.innerHTML =
-                    "TURN BUZZER OFF";
-
-
-                state.innerHTML =
-                    "ON";
-
-
-                state.style.color =
-                    "#32CD32";
-
-            }
-
-
-            /* BUZZER OFF */
-
-            else {
-
-                button.innerHTML =
-                    "TURN BUZZER ON";
-
-
-                state.innerHTML =
-                    "OFF";
-
-
-                state.style.color =
-                    "red";
-
-            }
-
+    L.tileLayer(
+        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        {
+            attribution: "&copy; OpenStreetMap contributors"
         }
+    ).addTo(map);
 
-    </script>
+    const marker = L.marker(
+        [latitude, longitude]
+    ).addTo(map);
+
+    marker.bindPopup(
+        "<b>🚦 Traffic Management System</b><br>System Location"
+    );
+
+    // =========================
+    // BUZZER
+    // =========================
+
+    let buzzerOn = false;
+
+    function toggleBuzzer() {
+
+        buzzerOn = !buzzerOn;
+
+        const button =
+            document.getElementById("buzzerButton");
+
+        const state =
+            document.getElementById("buzzerState");
+
+        if (buzzerOn) {
+
+            button.innerHTML =
+                "🔕 TURN BUZZER OFF";
+
+            state.innerHTML =
+                "ON";
+
+            state.style.color =
+                "#32CD32";
+
+        } else {
+
+            button.innerHTML =
+                "🔔 TURN BUZZER ON";
+
+            state.innerHTML =
+                "OFF";
+
+            state.style.color =
+                "red";
+        }
+    }
+
+</script>
 
 </body>
 </html>
