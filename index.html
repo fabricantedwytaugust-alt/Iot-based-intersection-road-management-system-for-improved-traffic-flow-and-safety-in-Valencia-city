@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
+
     <title>Traffic Control Login</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@500;600;700&display=swap"
+          rel="stylesheet">
 
     <style>
 
@@ -55,15 +57,11 @@
             font-size: 16px;
         }
 
-        input:focus {
-            outline: 2px solid #3b82f6;
-        }
-
         button {
             width: 95%;
             padding: 14px;
 
-            margin-top: 20px;
+            margin-top: 15px;
 
             border: none;
             border-radius: 8px;
@@ -71,7 +69,7 @@
             background: #2563eb;
             color: white;
 
-            font-size: 17px;
+            font-size: 16px;
             font-weight: bold;
 
             cursor: pointer;
@@ -81,88 +79,224 @@
             background: #3b82f6;
         }
 
+        .google-button {
+            background: white;
+            color: #222;
+        }
+
+        .google-button:hover {
+            background: #eeeeee;
+        }
+
         #message {
             margin-top: 15px;
             font-weight: bold;
         }
 
+        .divider {
+            margin: 20px 0;
+            color: #9ca3af;
+        }
+
     </style>
+
 </head>
 
 <body>
 
-    <div class="login-box">
+<div class="login-box">
 
-        <h1>LOGIN</h1>
+    <h1>LOGIN</h1>
 
-        <input
-            type="text"
-            id="username"
-            placeholder="Username"
-        >
+    <input
+        type="text"
+        id="username"
+        placeholder="Username"
+    >
 
-        <input
-            type="password"
-            id="password"
-            placeholder="Password"
-        >
+    <input
+        type="password"
+        id="password"
+        placeholder="Password"
+    >
 
-        <button onclick="login()">
-            LOGIN
-        </button>
+    <button onclick="login()">
+        LOGIN
+    </button>
 
-        <p id="message"></p>
-
+    <div class="divider">
+        ───── OR ─────
     </div>
 
+    <button
+        class="google-button"
+        onclick="googleLogin()">
 
-    <script>
+        Sign in with Google
 
-        function login() {
+    </button>
 
-            const username =
-                document.getElementById("username").value;
+    <p id="message"></p>
 
-            const password =
-                document.getElementById("password").value;
-
-
-            // CHANGE THESE
-            const correctUsername = "Admin";
-            const correctPassword = "TrafficDashboard";
+</div>
 
 
-            if (
-                username === correctUsername &&
-                password === correctPassword
-            ) {
+<script type="module">
 
-                document.getElementById("message").innerHTML =
-                    "Login successful";
+    import {
+        initializeApp
+    } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
 
-                document.getElementById("message").style.color =
-                    "#22c55e";
+    import {
+        getAuth,
+        GoogleAuthProvider,
+        signInWithPopup
+    } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 
-                // Go to dashboard
-                setTimeout(function() {
 
-                    window.location.href = "dashboard.html";
+    /* =================================
+       YOUR FIREBASE CONFIG
+       ================================= */
 
-                }, 800);
+    const firebaseConfig = {
 
-            } else {
+        apiKey: "AIzaSyBG2HaxA2LGT7daRDufYZcgzzKCrGlbvu0",
 
-                document.getElementById("message").innerHTML =
-                    "Incorrect username or password";
+        authDomain: "login-feature-for-traffic.firebaseapp.com",
 
-                document.getElementById("message").style.color =
-                    "#ef4444";
+        projectId: "login-feature-for-traffic",
 
-            }
+        storageBucket: "login-feature-for-traffic.firebasestorage.app",
+
+        messagingSenderId:
+            "658448480986",
+
+        appId:
+            "1:658448480986:web:314b9c4585486d597e83e3"
+        
+        measurement Id:
+            "G-ZW0VH1ER7D"
+
+    };
+
+
+    /* =================================
+       FIREBASE
+       ================================= */
+
+    const app =
+        initializeApp(firebaseConfig);
+
+    const auth =
+        getAuth(app);
+
+    const provider =
+        new GoogleAuthProvider();
+
+
+    /* =================================
+       NORMAL LOGIN
+       ================================= */
+
+    window.login = function() {
+
+        const username =
+            document.getElementById("username").value;
+
+        const password =
+            document.getElementById("password").value;
+
+
+        const correctUsername = "Admin";
+
+        const correctPassword = "TrafficDemo-7392";
+
+
+        if (
+            username === correctUsername &&
+            password === correctPassword
+        ) {
+
+            document.getElementById("message").innerHTML =
+                "Login successful!";
+
+            document.getElementById("message").style.color =
+                "#22c55e";
+
+
+            setTimeout(function() {
+
+                window.location.href =
+                    "dashboard.html";
+
+            }, 800);
 
         }
 
-    </script>
+        else {
+
+            document.getElementById("message").innerHTML =
+                "Incorrect username or password";
+
+            document.getElementById("message").style.color =
+                "#ef4444";
+
+        }
+
+    };
+
+
+    /* =================================
+       GOOGLE LOGIN
+       ================================= */
+
+    window.googleLogin = async function() {
+
+        try {
+
+            const result =
+                await signInWithPopup(
+                    auth,
+                    provider
+                );
+
+
+            const user =
+                result.user;
+
+
+            document.getElementById("message").innerHTML =
+                "Welcome, " + user.displayName + "!";
+
+            document.getElementById("message").style.color =
+                "#22c55e";
+
+
+            setTimeout(function() {
+
+                window.location.href =
+                    "dashboard.html";
+
+            }, 800);
+
+
+        }
+
+        catch (error) {
+
+            console.error(error);
+
+            document.getElementById("message").innerHTML =
+                "Google login failed.";
+
+            document.getElementById("message").style.color =
+                "#ef4444";
+
+        }
+
+    };
+
+</script>
 
 </body>
 </html>
